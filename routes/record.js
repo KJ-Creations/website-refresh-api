@@ -102,7 +102,7 @@ recordRoutes.route("/listings/update").post(function (req, res) {
 // This section will help you delete a record
 recordRoutes.route("/listings/delete/:id").delete((req, res) => {
   const dbConnect = dbo.getDb();
-  const listingQuery = { userId: req.body.userId };
+  const listingQuery = { userId: req.params.id };
 
   dbConnect
     .collection("users")
