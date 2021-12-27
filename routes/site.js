@@ -1,5 +1,6 @@
 const express = require("express");
 const { convert } = require("html-to-text");
+var nodemailer = require("nodemailer");
 const fetch = (...args) =>
   import("node-fetch").then(({ default: fetch }) => fetch(...args));
 

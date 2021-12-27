@@ -1,5 +1,6 @@
 const { MongoClient } = require("mongodb");
 const { convert } = require("html-to-text");
+var nodemailer = require("nodemailer");
 const fetch = (...args) =>
   import("node-fetch").then(({ default: fetch }) => fetch(...args));
 const connectionString = process.env.ATLAS_URI;
@@ -35,6 +36,33 @@ module.exports = {
                         notified: true,
                       },
                     };
+
+                    const transporter = nodemailer.createTransport({
+                      port: 465, // true for 465, false for other ports
+                      host: "smtp.gmail.com",
+                      auth: {
+                        user: "kjcreations.alerts@gmail.com",
+                        pass: "75a20d4f71",
+                      },
+                      secure: true,
+                    });
+                    const mailData = {
+                      from: "kjcreations.alerts@gmail.com", // sender address
+                      to: result[i].email, // list of receivers
+                      subject: "Action Required -> Update Detected",
+                      text: "That was easy!",
+                      html:
+                        "<b>Hey there! </b><br><br><p>This is to inform that we found changes in the following website</p><br/>  " +
+                        result[i].url +
+                        "<br/>" +
+                        "<br/>" +
+                        "<b>Thank You!</b>",
+                    };
+                    transporter.sendMail(mailData, function (err, info) {
+                      if (err) console.log(err);
+                      else console.log(info);
+                    });
+
                     await dbConnection
                       .collection("sites")
                       .updateOne(
