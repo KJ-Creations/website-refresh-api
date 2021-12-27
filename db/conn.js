@@ -1,4 +1,5 @@
 const { MongoClient } = require("mongodb");
+const { convert } = require("html-to-text");
 const fetch = (...args) =>
   import("node-fetch").then(({ default: fetch }) => fetch(...args));
 const connectionString = process.env.ATLAS_URI;
@@ -28,7 +29,6 @@ module.exports = {
               for (var i = 0; i < result.length; i++) {
                 if (result[i].before != result[i].after) {
                   if (!result[i].notified) {
-                    console.log("To be notified");
                     const listingQuery = { siteId: result[i].siteId };
                     const updates = {
                       $set: {
@@ -45,7 +45,7 @@ module.exports = {
                           if (err) {
                             console.log("Error Sending Data");
                           } else {
-                            console.log("Sent");
+                            console.log("Sent Notification");
                           }
                         }
                       );
@@ -55,12 +55,17 @@ module.exports = {
                   fetch(result[i].url)
                     .then(async (response) => {
                       responseText = await response.text();
+                      const text = convert(responseText, {
+                        selectors: [{ selector: "img", format: "skip" }],
+                        ignoreHref: true,
+                      }).replace(/\n/g, "");
                       // console.log(responseText);
-                      if (responseText != res1.before) {
+                      if (text != res1.before) {
+                        console.log("SET AFTER");
                         const listingQuery = { siteId: res1.siteId };
                         const updates = {
                           $set: {
-                            after: responseText,
+                            after: text,
                           },
                         };
                         await dbConnection
@@ -73,7 +78,7 @@ module.exports = {
                               if (err) {
                                 console.log("Error Sending Data");
                               } else {
-                                console.log("Sent");
+                                console.log("Updated After");
                               }
                             }
                           );
@@ -86,7 +91,7 @@ module.exports = {
               }
             }
           });
-      }, 1000);
+      }, 5000);
 
       return callback();
     });

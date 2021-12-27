@@ -1,4 +1,5 @@
 const express = require("express");
+const { convert } = require("html-to-text");
 const fetch = (...args) =>
   import("node-fetch").then(({ default: fetch }) => fetch(...args));
 
@@ -92,18 +93,23 @@ siteRoutes.route("/site").post(function (req, res) {
   const dbConnect = dbo.getDb();
   fetch(req.body.url)
     .then(async (response) => {
-      responseText = await response.text();
+      var responseText = await response.text();
       // console.log(responseText);
-      var before = responseText;
+      // res.status(200);
+      // res.send(responseText);
 
+      const text = convert(responseText, {
+        selectors: [{ selector: "img", format: "skip" }],
+        ignoreHref: true,
+      }).replace(/\n/g, "");
       const matchDocument = {
         siteId: req.body.siteId,
         url: req.body.url,
         userId: req.body.userId,
         email: req.body.email,
-        before: before,
-        after: before,
-        notified: req.body.notified,
+        before: text,
+        after: text,
+        notified: false,
       };
 
       dbConnect
@@ -176,11 +182,15 @@ siteRoutes.route("/site/refresh").post(function (req, res) {
     const dbConnect = dbo.getDb();
     const listingQuery = { siteId: req.body.siteId };
     responseText = await response.text();
+    const text = convert(responseText, {
+      selectors: [{ selector: "img", format: "skip" }],
+      ignoreHref: true,
+    }).replace(/\n/g, "");
 
     const updates = {
       $set: {
-        before: responseText,
-        after: responseText,
+        before: text,
+        after: text,
         notified: false,
       },
     };
