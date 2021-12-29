@@ -13,7 +13,7 @@ const siteRoutes = express.Router();
 const dbo = require("../db/conn");
 
 // This section will help you get a list of all the records.
-siteRoutes.route("/site").get(async function (req, res) {
+siteRoutes.route("/").get(async function (req, res) {
   const dbConnect = dbo.getDb();
 
   dbConnect
@@ -39,7 +39,7 @@ siteRoutes.route("/site").get(async function (req, res) {
     });
 });
 
-siteRoutes.route("/site/byUser/:user").get(async function (req, res) {
+siteRoutes.route("/byUser/:user").get(async function (req, res) {
   const dbConnect = dbo.getDb();
 
   dbConnect
@@ -64,7 +64,7 @@ siteRoutes.route("/site/byUser/:user").get(async function (req, res) {
     });
 });
 
-siteRoutes.route("/site/bySite/:site").get(async function (req, res) {
+siteRoutes.route("/bySite/:site").get(async function (req, res) {
   const dbConnect = dbo.getDb();
 
   dbConnect
@@ -90,7 +90,7 @@ siteRoutes.route("/site/bySite/:site").get(async function (req, res) {
 });
 
 // This section will help you create a new record.
-siteRoutes.route("/site").post(function (req, res) {
+siteRoutes.route("/").post(function (req, res) {
   const dbConnect = dbo.getDb();
   fetch(req.body.url)
     .then(async (response) => {
@@ -139,7 +139,7 @@ siteRoutes.route("/site").post(function (req, res) {
 });
 
 // This section will help you update a record by id.
-siteRoutes.route("/site/update").post(function (req, res) {
+siteRoutes.route("/update").post(function (req, res) {
   const dbConnect = dbo.getDb();
   const listingQuery = { siteId: req.body.siteId };
   const updates = {
@@ -178,7 +178,7 @@ siteRoutes.route("/site/update").post(function (req, res) {
     );
 });
 
-siteRoutes.route("/site/refresh").post(function (req, res) {
+siteRoutes.route("/refresh").post(function (req, res) {
   fetch(req.body.url).then(async (response) => {
     const dbConnect = dbo.getDb();
     const listingQuery = { siteId: req.body.siteId };
@@ -223,7 +223,7 @@ siteRoutes.route("/site/refresh").post(function (req, res) {
 });
 
 // This section will help you delete a record
-siteRoutes.route("/site/delete/:id").delete((req, res) => {
+siteRoutes.route("/delete/:id").delete((req, res) => {
   const dbConnect = dbo.getDb();
   const listingQuery = { siteId: req.params.id };
 
