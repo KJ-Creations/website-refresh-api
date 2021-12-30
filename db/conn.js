@@ -125,7 +125,7 @@ module.exports = {
         fetch("https://website-refresh-api.herokuapp.com/byUser/111")
           .then(async (response) => {
             var resp = await response.text();
-            console.log(resp);
+            console.log("Refreshed");
           })
           .catch((error) => {
             console.log(error);
