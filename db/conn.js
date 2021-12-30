@@ -130,7 +130,7 @@ module.exports = {
           .catch((error) => {
             console.log(error);
           });
-      }, 7200000);
+      }, 1800000);
 
       return callback();
     });
