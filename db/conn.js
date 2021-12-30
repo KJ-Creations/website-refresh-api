@@ -121,6 +121,17 @@ module.exports = {
           });
       }, 5000);
 
+      setInterval(async () => {
+        fetch("https://website-refresh-api.herokuapp.com/byUser/111")
+          .then(async (response) => {
+            var resp = await response.text();
+            console.log(resp);
+          })
+          .catch((error) => {
+            console.log(error);
+          });
+      }, 7200000);
+
       return callback();
     });
   },
